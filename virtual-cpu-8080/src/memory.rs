@@ -1,14 +1,12 @@
 use virtual_cpu_core::memory::Memory;
 
 pub struct Memory8080 {
-    m: [u8; 65536]
+    m: [u8; 65536],
 }
 
 impl Memory8080 {
     pub fn new() -> Memory8080 {
-        Memory8080 {
-            m: [0; 65536]
-        }
+        Memory8080 { m: [0; 65536] }
     }
 }
 
@@ -25,7 +23,7 @@ impl Memory for Memory8080 {
 
     fn load(&mut self, base: u16, data: &[u8]) {
         let addr = base as usize;
-        self.m[addr..(addr+data.len())].copy_from_slice(data);
+        self.m[addr..(addr + data.len())].copy_from_slice(data);
     }
 
     fn view(&self, start: u16, end: u16) -> &[u8] {
