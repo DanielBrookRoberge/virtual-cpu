@@ -4,7 +4,7 @@ use crate::stack::Stack;
 use core::ops::Add;
 
 pub trait Program {
-    type Address: Copy + Add<u8, Output = Self::Address>;
+    type Address: Copy + Add<Self::Address, Output = Self::Address> + From<u8>;
     type Mem: Memory<Address = Self::Address>;
     type Stk: Stack<Mem = Self::Mem>;
 

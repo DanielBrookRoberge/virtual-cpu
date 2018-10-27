@@ -1,0 +1,11 @@
+[[package]]
+name = "virtual-cpu-8080"
+version = "0.1.0"
+dependencies = [
+ "virtual-cpu-core 0.1.0",
+]
+
+[[package]]
+name = "virtual-cpu-core"
+version = "0.1.0"
+
