@@ -1,0 +1,7 @@
+[package]
+name = "virtual-cpu-core"
+version = "0.1.0"
+authors = ["Danielle Brook-Roberge <danielle@brook-roberge.ca>"]
+edition = "2018"
+
+[dependencies]
