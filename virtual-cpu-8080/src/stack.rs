@@ -4,8 +4,15 @@ use virtual_cpu_core::stack::Stack;
 
 use crate::memory::Memory8080;
 
+#[derive(Default, Debug)]
 pub struct Stack8080 {
     sp: u16,
+}
+
+impl Stack8080 {
+    pub fn new() -> Stack8080 {
+        Stack8080::default()
+    }
 }
 
 impl Stack for Stack8080 {
