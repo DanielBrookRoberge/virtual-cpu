@@ -30,7 +30,7 @@ impl Flags8080 {
 impl Flags for Flags8080 {
     type Representation = u8;
 
-    pub fn serialize(&self) -> u8 {
+    fn serialize(&self) -> u8 {
         (self.z as u8)
             | (self.s as u8) << 1
             | (self.p as u8) << 2
@@ -38,7 +38,7 @@ impl Flags for Flags8080 {
             | (self.ac as u8) << 4
     }
 
-    pub fn deserialize(&mut self, flags: u8) {
+    fn deserialize(&mut self, flags: u8) {
         self.z = (flags & 0x01) != 0;
         self.s = (flags & 0x02) != 0;
         self.p = (flags & 0x04) != 0;
