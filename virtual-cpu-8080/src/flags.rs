@@ -25,6 +25,12 @@ impl Flags8080 {
     pub fn set_p(&mut self, n: u8) {
         self.p = (n.count_ones() & 0x01) == 0;
     }
+
+    pub fn set_flags_no_carry(&mut self, result: u8) {
+        self.set_z(result);
+        self.set_s(result);
+        self.set_p(result);
+    }
 }
 
 impl Flags for Flags8080 {
