@@ -46,6 +46,7 @@ pub fn execute(state: &mut State, instruction: &[u8]) {
         0x70..=0x78 => state.mov_pr8(Name16::HL, register_for_code(opcode)),
         0x40..=0x7f => state.mov_rr8(register_for_code(opcode >> 3), register_for_code(opcode)),
 
+        0x80..=0x88 => state.add_rr8(register_for_code(opcode)),
         0xa0..=0xa8 => state.logical_operation_rr(register_for_code(opcode), and8),
         0xa9..=0xaf => state.logical_operation_rr(register_for_code(opcode), xor8),
         0xb0..=0xb8 => state.logical_operation_rr(register_for_code(opcode), or8),

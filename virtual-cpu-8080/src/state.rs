@@ -95,12 +95,26 @@ impl State {
 
     // BINARY OPERATIONS
 
-    pub fn logical_operation_rr(&mut self, src: Name8, operation: impl Fn(u8, u8) -> u8) {
+    pub fn add_ri8(&mut self, operand: u8) {
+        let (result, carry) = self.r.get8(Name8::A).overflowing_add(operand);
+        self.r.cc.set_flags_no_carry(result);
+        self.r.cc.cy = carry;
+        self.r.set8(Name8::A, result);
+    }
+
+    pub fn add_rr8(&mut self, src: Name8) {
+        self.add_ri8(self.r.get8(src));
+    }
+
+    pub fn logical_operation_ri(&mut self, operand: u8, operation: impl Fn(u8, u8) -> u8) {
         let accumulator = self.r.get8(Name8::A);
-        let operand = self.r.get8(src);
 
         let result = operation(accumulator, operand);
         self.r.cc.set_flags_no_carry(result);
         self.r.set8(Name8::A, result);
+    }
+
+    pub fn logical_operation_rr(&mut self, src: Name8, operation: impl Fn(u8, u8) -> u8) {
+        self.logical_operation_ri(self.r.get8(src), operation);
     }
 }
