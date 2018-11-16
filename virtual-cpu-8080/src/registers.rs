@@ -2,6 +2,7 @@ use virtual_cpu_core::bytes::*;
 use virtual_cpu_core::registers::*;
 use crate::flags::Flags8080;
 
+#[derive(Clone, Copy)]
 pub enum Name8 {
     A,
     B,
@@ -12,6 +13,7 @@ pub enum Name8 {
     L
 }
 
+#[derive(Clone, Copy)]
 pub enum Name16 {
     BC,
     DE,

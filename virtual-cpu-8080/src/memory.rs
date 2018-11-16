@@ -1,4 +1,5 @@
 use virtual_cpu_core::memory::Memory;
+use std::fmt;
 
 pub struct Memory8080 {
     m: [u8; 65536],
@@ -28,5 +29,11 @@ impl Memory for Memory8080 {
 
     fn view(&self, start: u16, end: u16) -> &[u8] {
         &self.m[(start as usize)..=(end as usize)]
+    }
+}
+
+impl fmt::Debug for Memory8080 {
+    fn fmt(&self, _f: &mut fmt::Formatter) -> fmt::Result {
+        Ok(())
     }
 }

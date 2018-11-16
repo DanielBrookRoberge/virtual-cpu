@@ -62,7 +62,7 @@ impl Program for Program8080 {
     }
 
     fn call(&mut self, m: &mut Memory8080, s: &mut Stack8080, addr: u16) {
-        s.push_word(m, self.pc);
+        s.push_word(m, self.pc + self.instruction_length);
         self.jump(addr);
     }
 
