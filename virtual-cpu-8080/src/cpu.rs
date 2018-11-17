@@ -1,8 +1,8 @@
 use crate::instructions::*;
 use crate::registers::*;
-use crate::state::State;
+use crate::state::State8080;
 
-pub fn execute(state: &mut State, instruction: &[u8]) {
+pub fn execute(state: &mut State8080, instruction: &[u8]) {
     let opcode = instruction[0];
 
     match opcode {

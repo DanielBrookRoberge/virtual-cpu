@@ -52,3 +52,25 @@ impl Flags for Flags8080 {
         self.ac = (flags & 0x10) != 0;
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_set_flags_no_carry() {
+        let mut flags = Flags8080::new();
+
+        flags.set_flags_no_carry(0);
+        assert_eq!(flags.z, true);
+        assert_eq!(flags.s, false);
+        assert_eq!(flags.p, true);
+
+        flags.set_flags_no_carry(0xf0);
+        assert_eq!(flags.z, false);
+        assert_eq!(flags.s, true);
+        assert_eq!(flags.p, true);
+
+    }
+}

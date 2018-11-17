@@ -9,16 +9,17 @@ use crate::program::Program8080;
 use crate::registers::*;
 use crate::instructions::*;
 
-pub struct State {
+#[derive(Debug)]
+pub struct State8080 {
     pub m: Memory8080,
     pub s: Stack8080,
     pub p: Program8080,
     pub r: Registers8080
 }
 
-impl State {
-    pub fn new() -> State {
-        State {
+impl State8080 {
+    pub fn new() -> State8080 {
+        State8080 {
             m: Memory8080::new(),
             s: Stack8080::new(),
             p: Program8080::new(),
