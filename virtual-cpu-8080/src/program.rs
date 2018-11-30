@@ -45,10 +45,10 @@ impl Program for Program8080 {
         self.pc
     }
 
-    fn get_instruction<'a>(&mut self, m: &'a Memory8080) -> &'a [u8] {
+    fn get_instruction(&mut self, m: &Memory8080) -> Vec<u8> {
         let opcode = m.get_byte(self.pc);
         self.instruction_length = INSTRUCTION_LENGTH[opcode as usize];
-        m.view(self.pc, self.pc + self.instruction_length - 1)
+        m.view(self.pc, self.pc + self.instruction_length - 1).to_vec()
     }
 
     fn advance(&mut self) {

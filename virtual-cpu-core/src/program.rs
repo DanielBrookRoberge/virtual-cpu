@@ -9,7 +9,7 @@ pub trait Program {
     type Stk: Stack<Address = Self::Address, Mem = Self::Mem>;
 
     fn get_pc(&self) -> Self::Address;
-    fn get_instruction<'a>(&mut self, m: &'a Self::Mem) -> &'a [u8];
+    fn get_instruction(&mut self, m: &Self::Mem) -> Vec<u8>;
 
     fn advance(&mut self);
 
