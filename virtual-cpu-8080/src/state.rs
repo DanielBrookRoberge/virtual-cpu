@@ -134,4 +134,10 @@ impl State8080 {
     pub fn pop_r16(&mut self, dest: Name16) {
         self.r.set16(dest, self.s.pop_word(&mut self.m));
     }
+
+    // PROGRAM OPERATIONS
+
+    pub fn get_instruction(&mut self) -> Vec<u8> {
+        self.p.get_instruction(&mut self.m)
+    }
 }
