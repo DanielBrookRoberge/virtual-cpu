@@ -36,6 +36,10 @@ impl Registers8080 {
     pub fn new() -> Registers8080 {
         Registers8080::default()
     }
+
+    pub fn set_flags_from_r8(&mut self, reg: Name8) {
+        self.cc.set_flags_no_carry(self.get8(reg));
+    }
 }
 
 impl Registers8 for Registers8080 {
