@@ -1,6 +1,7 @@
 use virtual_cpu_core::registers::*;
 use virtual_cpu_core::memory::Memory;
 use virtual_cpu_core::program::Program;
+use virtual_cpu_core::stack::Stack;
 
 use crate::flags::Flags8080;
 use crate::memory::Memory8080;
@@ -29,22 +30,27 @@ impl State8080 {
 
 // MOV operations
 
+    // MOV register FROM register
     pub fn mov_rr8(&mut self, dest: Name8, src: Name8) {
         self.r.set8(dest, self.r.get8(src));
     }
 
+    // MOV register FROM immediate
     pub fn mov_ri8(&mut self, dest: Name8, val: u8) {
         self.r.set8(dest, val);
     }
 
+    // MOV register FROM pointer (in register)
     pub fn mov_rp8(&mut self, dest: Name8, src: Name16) {
         self.r.set8(dest, self.m.get_byte(self.r.get16(src)));
     }
 
+    // MOV register FROM address (in operand)
     pub fn mov_ra8(&mut self, dest: Name8, src: u16) {
         self.r.set8(dest, self.m.get_byte(src));
     }
 
+    // MOV pointer FROM register
     pub fn mov_pr8(&mut self, dest: Name16, src: Name8) {
         self.m.set_byte(self.r.get16(dest), self.r.get8(src));
     }
@@ -117,5 +123,15 @@ impl State8080 {
 
     pub fn logical_operation_rr(&mut self, src: Name8, operation: impl Fn(u8, u8) -> u8) {
         self.logical_operation_ri(self.r.get8(src), operation);
+    }
+
+    // STACK OPERATIONS
+
+    pub fn push_r16(&mut self, src: Name16) {
+        self.s.push_word(&mut self.m, self.r.get16(src));
+    }
+
+    pub fn pop_r16(&mut self, dest: Name16) {
+        self.r.set16(dest, self.s.pop_word(&mut self.m));
     }
 }
