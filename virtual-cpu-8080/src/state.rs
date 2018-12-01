@@ -118,6 +118,7 @@ impl State8080 {
 
         let result = operation(accumulator, operand);
         self.r.cc.set_flags_no_carry(result);
+        self.r.cc.cy = false;
         self.r.set8(Name8::A, result);
     }
 

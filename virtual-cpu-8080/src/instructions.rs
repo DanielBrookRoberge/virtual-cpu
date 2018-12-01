@@ -43,3 +43,11 @@ pub fn inc8(n: u8) -> u8 {
 pub fn inc16(n: u16) -> u16 {
     n.wrapping_add(1)
 }
+
+pub fn dec8(n: u8) -> u8 {
+    n.wrapping_sub(1)
+}
+
+pub fn dec16(n: u16) -> u16 {
+    n.wrapping_sub(1)
+}
