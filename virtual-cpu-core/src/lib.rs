@@ -1,6 +1,12 @@
 pub mod bytes;
-pub mod flags;
-pub mod memory;
-pub mod program;
-pub mod registers;
-pub mod stack;
+mod flags;
+mod memory;
+mod program;
+mod registers;
+mod stack;
+
+pub use self::flags::Flags;
+pub use self::program::Program;
+pub use self::memory::Memory;
+pub use self::stack::Stack;
+pub use self::registers::{Registers8, Registers16};

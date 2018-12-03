@@ -1,7 +1,4 @@
-use virtual_cpu_core::registers::*;
-use virtual_cpu_core::memory::Memory;
-use virtual_cpu_core::program::Program;
-use virtual_cpu_core::stack::Stack;
+use virtual_cpu_core::{Memory, Program, Registers8, Registers16, Stack};
 
 use crate::flags::Flags8080;
 use crate::memory::Memory8080;

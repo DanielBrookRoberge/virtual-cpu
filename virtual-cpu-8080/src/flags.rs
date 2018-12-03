@@ -1,4 +1,4 @@
-use virtual_cpu_core::flags::Flags;
+use virtual_cpu_core::Flags;
 
 #[derive(PartialEq, Debug, Default)]
 pub struct Flags8080 {

@@ -1,4 +1,4 @@
-use virtual_cpu_core::memory::Memory;
+use virtual_cpu_core::Memory;
 use std::fmt;
 
 pub struct Memory8080 {

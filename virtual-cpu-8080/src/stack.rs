@@ -1,6 +1,5 @@
 use virtual_cpu_core::bytes::*;
-use virtual_cpu_core::memory::Memory;
-use virtual_cpu_core::stack::Stack;
+use virtual_cpu_core::{Memory, Stack};
 
 use crate::memory::Memory8080;
 

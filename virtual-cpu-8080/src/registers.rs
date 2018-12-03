@@ -1,5 +1,5 @@
 use virtual_cpu_core::bytes::*;
-use virtual_cpu_core::registers::*;
+use virtual_cpu_core::{Registers8, Registers16};
 use crate::flags::Flags8080;
 
 #[derive(Clone, Copy)]
