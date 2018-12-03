@@ -11,6 +11,12 @@ impl Memory8080 {
     }
 }
 
+impl Default for Memory8080 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Memory for Memory8080 {
     type Address = u16;
 

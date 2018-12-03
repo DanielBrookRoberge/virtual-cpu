@@ -8,9 +8,8 @@ use crate::memory::Memory8080;
 use crate::stack::Stack8080;
 use crate::program::Program8080;
 use crate::registers::*;
-use crate::instructions::*;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct State8080 {
     pub m: Memory8080,
     pub s: Stack8080,
@@ -139,6 +138,6 @@ impl State8080 {
     // PROGRAM OPERATIONS
 
     pub fn get_instruction(&mut self) -> Vec<u8> {
-        self.p.get_instruction(&mut self.m)
+        self.p.get_instruction(&self.m)
     }
 }
