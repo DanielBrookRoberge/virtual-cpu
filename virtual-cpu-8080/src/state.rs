@@ -11,7 +11,8 @@ pub struct State8080 {
     pub m: Memory8080,
     pub s: Stack8080,
     pub p: Program8080,
-    pub r: Registers8080
+    pub r: Registers8080,
+    pub int_enable: bool
 }
 
 impl State8080 {
@@ -20,7 +21,8 @@ impl State8080 {
             m: Memory8080::new(),
             s: Stack8080::new(),
             p: Program8080::new(),
-            r: Registers8080::new()
+            r: Registers8080::new(),
+            int_enable: false
         }
     }
 
@@ -167,5 +169,20 @@ impl State8080 {
 
     pub fn get_instruction(&mut self) -> Vec<u8> {
         self.p.get_instruction(&self.m)
+    }
+
+    // INTERRUPTS
+
+    pub fn set_interrupt_flag(&mut self, target: bool) {
+        self.int_enable = target;
+    }
+
+    pub fn get_interrupt_flag(&mut self) -> bool {
+        self.int_enable
+    }
+
+    pub fn trigger_interrupt(&mut self, n: u16) {
+        self.call_a(0x08 * n);
+        self.int_enable = false;
     }
 }
