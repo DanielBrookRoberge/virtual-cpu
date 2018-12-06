@@ -115,6 +115,23 @@ impl State8080 {
         self.add_ri8(self.r.get8(src));
     }
 
+    pub fn add_ri16(&mut self, operand: u16) {
+        let (result, carry) = self.r.get16(Name16::HL).overflowing_add(operand);
+        self.r.cc.cy = carry;
+        self.r.set16(Name16::HL, result);
+    }
+
+    pub fn add_rr16(&mut self, src: Name16) {
+        self.add_ri16(self.r.get16(src));
+    }
+
+    pub fn sub_ri8(&mut self, operand: u8) {
+        let (result, carry) = self.r.get8(Name8::A).overflowing_sub(operand);
+        self.r.cc.set_flags_no_carry(result);
+        self.r.cc.cy = carry;
+        self.r.set8(Name8::A, result);
+    }
+
     pub fn logical_operation_ri(&mut self, operand: u8, operation: impl Fn(u8, u8) -> u8) {
         let accumulator = self.r.get8(Name8::A);
 
