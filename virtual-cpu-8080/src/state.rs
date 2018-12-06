@@ -51,6 +51,12 @@ impl State8080 {
         self.m.set_byte(self.r.get16(dest), self.r.get8(src));
     }
 
+    // MOV pointer FROM immediate
+    pub fn mov_pi8(&mut self, dest: Name16, src: u8) {
+        self.m.set_byte(self.r.get16(dest), src);
+    }
+
+    // MOV address FROM register
     pub fn mov_ar8(&mut self, dest: u16, src: Name8) {
         self.m.set_byte(dest, self.r.get8(src));
     }
@@ -130,6 +136,14 @@ impl State8080 {
 
     pub fn pop_r16(&mut self, dest: Name16) {
         self.r.set16(dest, self.s.pop_word(&mut self.m));
+    }
+
+    pub fn pop_word(&mut self) -> u16 {
+        self.s.pop_word(&mut self.m)
+    }
+
+    pub fn push_word(&mut self, val: u16) {
+        self.s.push_word(&mut self.m, val);
     }
 
     // PROGRAM OPERATIONS
