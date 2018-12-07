@@ -14,6 +14,42 @@ impl Flags8080 {
         Default::default()
     }
 
+    // Associated predicates
+
+    pub fn is_plus(f: &Flags8080) -> bool {
+        !f.s
+    }
+
+    pub fn is_minus(f: &Flags8080) -> bool {
+        f.s
+    }
+
+    pub fn is_nz(f: &Flags8080) -> bool {
+        !f.z
+    }
+
+    pub fn is_z(f: &Flags8080) -> bool {
+        f.z
+    }
+
+    pub fn is_nc(f: &Flags8080) -> bool {
+        !f.cy
+    }
+
+    pub fn is_c(f: &Flags8080) -> bool {
+        f.cy
+    }
+
+    pub fn is_parity_odd(f: &Flags8080) -> bool {
+        !f.p
+    }
+
+    pub fn is_parity_even(f: &Flags8080) -> bool {
+        f.p
+    }
+
+    // Modifications
+
     pub fn set_z(&mut self, n: u8) {
         self.z = n == 0;
     }
