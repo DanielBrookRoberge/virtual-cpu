@@ -12,7 +12,7 @@ pub fn register_for_code(code: u8) -> Name8 {
         0x5 => Name8::L,
         0x6 => panic!("0x6 needs special handling"),
         0x7 => Name8::A,
-        _ => panic!("shouldn't happen")
+        _ => panic!("shouldn't happen"),
     }
 }
 

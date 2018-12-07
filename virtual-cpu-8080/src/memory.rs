@@ -1,5 +1,5 @@
-use virtual_cpu_core::Memory;
 use std::fmt;
+use virtual_cpu_core::Memory;
 
 pub struct Memory8080 {
     m: [u8; 65536],

@@ -1,10 +1,10 @@
-use virtual_cpu_core::{Memory, Program, Registers8, Registers16, Stack};
+use virtual_cpu_core::{Memory, Program, Registers16, Registers8, Stack};
 
 use crate::flags::Flags8080;
 use crate::memory::Memory8080;
-use crate::stack::Stack8080;
 use crate::program::Program8080;
 use crate::registers::*;
+use crate::stack::Stack8080;
 
 #[derive(Debug, Default)]
 pub struct State8080 {
@@ -12,7 +12,7 @@ pub struct State8080 {
     pub s: Stack8080,
     pub p: Program8080,
     pub r: Registers8080,
-    pub int_enable: bool
+    pub int_enable: bool,
 }
 
 impl State8080 {
@@ -22,11 +22,11 @@ impl State8080 {
             s: Stack8080::new(),
             p: Program8080::new(),
             r: Registers8080::new(),
-            int_enable: false
+            int_enable: false,
         }
     }
 
-// MOV operations
+    // MOV operations
 
     // MOV register FROM register
     pub fn mov_rr8(&mut self, dest: Name8, src: Name8) {

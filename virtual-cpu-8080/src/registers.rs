@@ -1,6 +1,6 @@
-use virtual_cpu_core::bytes::*;
-use virtual_cpu_core::{Registers8, Registers16};
 use crate::flags::Flags8080;
+use virtual_cpu_core::bytes::*;
+use virtual_cpu_core::{Registers16, Registers8};
 
 #[derive(Clone, Copy)]
 pub enum Name8 {
@@ -10,14 +10,14 @@ pub enum Name8 {
     D,
     E,
     H,
-    L
+    L,
 }
 
 #[derive(Clone, Copy)]
 pub enum Name16 {
     BC,
     DE,
-    HL
+    HL,
 }
 
 #[derive(Debug, Default)]
@@ -29,7 +29,7 @@ pub struct Registers8080 {
     pub e: u8,
     pub h: u8,
     pub l: u8,
-    pub cc: Flags8080
+    pub cc: Flags8080,
 }
 
 impl Registers8080 {
@@ -53,7 +53,7 @@ impl Registers8 for Registers8080 {
             Name8::D => self.d,
             Name8::E => self.e,
             Name8::H => self.h,
-            Name8::L => self.l
+            Name8::L => self.l,
         }
     }
 
@@ -65,7 +65,7 @@ impl Registers8 for Registers8080 {
             Name8::D => self.d = val,
             Name8::E => self.e = val,
             Name8::H => self.h = val,
-            Name8::L => self.l = val
+            Name8::L => self.l = val,
         }
     }
 }
@@ -77,7 +77,7 @@ impl Registers16 for Registers8080 {
         match reg {
             Name16::BC => assemble_word(self.b, self.c),
             Name16::DE => assemble_word(self.d, self.e),
-            Name16::HL => assemble_word(self.h, self.l)
+            Name16::HL => assemble_word(self.h, self.l),
         }
     }
 

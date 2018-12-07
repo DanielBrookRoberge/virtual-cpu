@@ -53,7 +53,6 @@ impl Flags for Flags8080 {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -71,6 +70,5 @@ mod tests {
         assert_eq!(flags.z, false);
         assert_eq!(flags.s, true);
         assert_eq!(flags.p, true);
-
     }
 }

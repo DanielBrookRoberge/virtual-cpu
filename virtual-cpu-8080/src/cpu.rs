@@ -6,9 +6,9 @@ pub fn execute(state: &mut State8080, instruction: &[u8]) {
     let opcode = instruction[0];
 
     match opcode {
-        0x00 => (), // NOP
+        0x00 => (),                                                     // NOP
         0x01 => state.mov_ri16(Name16::BC, word_arg_from(instruction)), // LXI B,word
-        0x02 => state.mov_pr8(Name16::BC, Name8::A), // STAX B
+        0x02 => state.mov_pr8(Name16::BC, Name8::A),                    // STAX B
 
         0x06 => state.mov_ri8(Name8::B, byte_arg_from(instruction)), // MVI B,byte
 
@@ -18,9 +18,9 @@ pub fn execute(state: &mut State8080, instruction: &[u8]) {
 
         0x0e => state.mov_ri8(Name8::C, byte_arg_from(instruction)), // MVI C,byte
 
-        0x10 => (), // NOP
+        0x10 => (),                                                     // NOP
         0x11 => state.mov_ri16(Name16::DE, word_arg_from(instruction)), // LXI D,word
-        0x12 => state.mov_pr8(Name16::DE, Name8::A), // STAX D
+        0x12 => state.mov_pr8(Name16::DE, Name8::A),                    // STAX D
 
         0x16 => state.mov_ri8(Name8::D, byte_arg_from(instruction)), // MVI D,byte
 
@@ -30,7 +30,7 @@ pub fn execute(state: &mut State8080, instruction: &[u8]) {
 
         0x1e => state.mov_ri8(Name8::E, byte_arg_from(instruction)), // MVI E,byte
 
-        0x20 => (), // NOP
+        0x20 => (),                                                     // NOP
         0x21 => state.mov_ri16(Name16::HL, word_arg_from(instruction)), // LXI H,word
         0x22 => state.mov_ar16(word_arg_from(instruction), Name16::HL), // SHLD a16
 
@@ -51,6 +51,6 @@ pub fn execute(state: &mut State8080, instruction: &[u8]) {
         0xa9..=0xaf => state.logical_operation_rr(register_for_code(opcode), xor8),
         0xb0..=0xb8 => state.logical_operation_rr(register_for_code(opcode), or8),
 
-        _ => panic!("Unimplemented")
+        _ => panic!("Unimplemented"),
     }
 }
