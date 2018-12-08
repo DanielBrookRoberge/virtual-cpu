@@ -147,7 +147,14 @@ impl State8080 {
         self.logical_operation_ri(self.r.get8(src), operation);
     }
 
-    // STACK OPERATIONS
+    // UNARY OPERATIONS
+
+    pub fn unary_math_r8(&mut self, src: Name8, operation: impl Fn(u8) -> u8) {
+        self.r.update8(src, operation);
+        self.r.set_flags_from_r8(src);
+    }
+
+    // STACK OPERATION
 
     pub fn push_r16(&mut self, src: Name16) {
         self.s.push_word(&mut self.m, self.r.get16(src));
