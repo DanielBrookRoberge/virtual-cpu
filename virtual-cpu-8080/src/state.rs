@@ -87,6 +87,12 @@ impl State8080 {
         self.m.set_word(dest, self.r.get16(src));
     }
 
+    // INDIRECT MEMORY ACCESS
+
+    pub fn get_indirect8(&self, ptr: Name16) -> u8 {
+        self.m.get_byte(self.r.get16(ptr))
+    }
+
     // CONTROL FLOW
     pub fn test_flags(&self, predicate: impl Fn(&Flags8080) -> bool) -> bool {
         predicate(&self.r.cc)
