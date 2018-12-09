@@ -1,5 +1,5 @@
-use crate::machine::Machine;
 use crate::instructions::*;
+use crate::machine::Machine;
 use crate::registers::{Name16, Name8};
 use crate::state::State8080 as State;
 use virtual_cpu_core::bytes::*;

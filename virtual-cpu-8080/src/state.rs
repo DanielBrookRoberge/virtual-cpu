@@ -1,11 +1,11 @@
-use virtual_cpu_core::{Memory, Program, Registers16, Registers8, Stack, bytes::*};
+use virtual_cpu_core::{bytes::*, Memory, Program, Registers16, Registers8, Stack};
 
 use crate::flags::Flags8080;
+use crate::instructions::{predicate_for, word_arg_from};
 use crate::memory::Memory8080;
 use crate::program::Program8080;
 use crate::registers::*;
 use crate::stack::Stack8080;
-use crate::instructions::{predicate_for, word_arg_from};
 
 #[derive(Debug, Default)]
 pub struct State8080 {

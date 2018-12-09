@@ -6,7 +6,6 @@ pub trait Registers8 {
     fn update8(&mut self, reg: Self::Name, updater: impl Fn(u8) -> u8) {
         self.set8(reg, updater(self.get8(reg)));
     }
-
 }
 
 pub trait Registers16 {

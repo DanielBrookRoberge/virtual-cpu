@@ -31,7 +31,6 @@ pub fn predicate_for(opcode: u8) -> impl (Fn(&Flags8080) -> bool) {
     }
 }
 
-
 pub fn word_arg_from(instruction: &[u8]) -> u16 {
     assemble_word(instruction[2], instruction[1])
 }
