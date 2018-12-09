@@ -1,7 +1,5 @@
 [workspace]
 members = [
   "virtual-cpu-core",
-  "virtual-cpu-8080",
-  "virtual_8080",
-  "rust-emulator"
+  "virtual-cpu-8080"
 ]
