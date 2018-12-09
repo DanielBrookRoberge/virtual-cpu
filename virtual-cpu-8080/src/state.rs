@@ -1,4 +1,4 @@
-use virtual_cpu_core::{Memory, Program, Registers16, Registers8, Stack};
+use virtual_cpu_core::{Memory, Program, Registers16, Registers8, Stack, bytes::*};
 
 use crate::flags::Flags8080;
 use crate::memory::Memory8080;
@@ -133,11 +133,36 @@ impl State8080 {
         self.add_ri16(self.r.get16(src));
     }
 
+    pub fn adc_ri8(&mut self, operand: u8) {
+        let result = u16::from(self.r.get8(Name8::A)) + u16::from(operand) + u16::from(self.r.cc.z);
+        self.r.cc.set_flags_no_carry(low_order_byte(result));
+        self.r.cc.cy = result > 0xff;
+        self.r.set8(Name8::A, low_order_byte(result));
+    }
+
     pub fn sub_ri8(&mut self, operand: u8) {
         let (result, carry) = self.r.get8(Name8::A).overflowing_sub(operand);
         self.r.cc.set_flags_no_carry(result);
         self.r.cc.cy = carry;
         self.r.set8(Name8::A, result);
+    }
+
+    pub fn sbb_ri8(&mut self, operand: u8) {
+        let result = self
+            .r
+            .get8(Name8::A)
+            .wrapping_sub(operand)
+            .wrapping_sub(self.r.cc.cy as u8);
+
+        self.r.cc.set_flags_no_carry(result);
+        self.r.cc.cy = self.r.a < operand;
+        self.r.set8(Name8::A, result);
+    }
+
+    pub fn cmp_ri8(&mut self, operand: u8) {
+        let (result, carry) = self.r.a.overflowing_sub(operand);
+        self.r.cc.set_flags_no_carry(result);
+        self.r.cc.cy = carry;
     }
 
     pub fn logical_operation_ri(&mut self, operand: u8, operation: impl Fn(u8, u8) -> u8) {
