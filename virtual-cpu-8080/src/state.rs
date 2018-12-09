@@ -5,6 +5,7 @@ use crate::memory::Memory8080;
 use crate::program::Program8080;
 use crate::registers::*;
 use crate::stack::Stack8080;
+use crate::instructions::{predicate_for, word_arg_from};
 
 #[derive(Debug, Default)]
 pub struct State8080 {
@@ -94,6 +95,7 @@ impl State8080 {
     }
 
     // CONTROL FLOW
+
     pub fn test_flags(&self, predicate: impl Fn(&Flags8080) -> bool) -> bool {
         predicate(&self.r.cc)
     }
@@ -108,6 +110,24 @@ impl State8080 {
 
     pub fn ret(&mut self) {
         self.p.ret(&mut self.m, &mut self.s);
+    }
+
+    pub fn jump_if(&mut self, instruction: &[u8]) {
+        if self.test_flags(predicate_for(instruction[0])) {
+            self.jump_a(word_arg_from(instruction));
+        }
+    }
+
+    pub fn call_if(&mut self, instruction: &[u8]) {
+        if self.test_flags(predicate_for(instruction[0])) {
+            self.call_a(word_arg_from(instruction));
+        }
+    }
+
+    pub fn ret_if(&mut self, instruction: &[u8]) {
+        if self.test_flags(predicate_for(instruction[0])) {
+            self.ret();
+        }
     }
 
     // BINARY OPERATIONS
