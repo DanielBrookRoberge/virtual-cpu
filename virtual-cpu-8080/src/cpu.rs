@@ -2,8 +2,7 @@ use crate::instructions::*;
 use crate::machine::Machine;
 use crate::registers::{Name16, Name8};
 use crate::state::State8080 as State;
-use virtual_cpu_core::bytes::*;
-use virtual_cpu_core::{Flags, Program, Registers16, Registers8, Stack};
+use virtual_cpu_core::{Program, Registers16, Registers8, Stack};
 
 static OPCODE_TIMING: [usize; 256] = [
     4, 10, 7, 5, 5, 5, 7, 4, 4, 10, 7, 5, 5, 5, 7, 4, //0x00..0x0f
@@ -190,17 +189,12 @@ fn emulate_group3(instruction: &[u8], s: &mut State, m: &mut impl Machine) {
     match opcode & 0x7 {
         0x0 => s.ret_if(instruction),
         0x1 => match (opcode >> 3) & 0x7 {
-            0x0 => s.pop_r16(Name16::BC),           // POP B
-            0x1 | 0x3 => s.ret(),                   // RET
-            0x2 => s.pop_r16(Name16::DE),           // POP D
-            0x4 => s.pop_r16(Name16::HL),           // POP H
-            0x5 => s.jump_a(s.r.get16(Name16::HL)), // PCHL
-            0x6 => {
-                // POP PSW
-                let word = s.pop_word();
-                s.r.set8(Name8::A, high_order_byte(word));
-                s.r.cc.deserialize(low_order_byte(word));
-            }
+            0x0 => s.pop_r16(Name16::BC),             // POP B
+            0x1 | 0x3 => s.ret(),                     // RET
+            0x2 => s.pop_r16(Name16::DE),             // POP D
+            0x4 => s.pop_r16(Name16::HL),             // POP H
+            0x5 => s.jump_a(s.r.get16(Name16::HL)),   // PCHL
+            0x6 => s.pop_r16(Name16::AF),             // POP PSW
             0x7 => s.s.set_sp(s.r.get16(Name16::HL)), // SPHL
 
             _ => panic!("Shouldn't happen"),
@@ -233,10 +227,8 @@ fn emulate_group3(instruction: &[u8], s: &mut State, m: &mut impl Machine) {
             0x1 | 0x3 | 0x5 | 0x7 => s.call_a(word_arg_from(instruction)), // CALL a16
             0x2 => s.push_r16(Name16::DE), // PUSH D
             0x4 => s.push_r16(Name16::HL), // PUSH H
-            0x6 => {
-                // PUSH PSW
-                s.push_word(assemble_word(s.r.get8(Name8::A), s.r.cc.serialize()));
-            }
+            0x6 => s.push_r16(Name16::AF), // PUSH PSW
+
             _ => panic!("Shouldn't happen"),
         },
         0x6 => operate8(s, opcode, byte_arg_from(instruction)),

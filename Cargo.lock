@@ -9,3 +9,11 @@ dependencies = [
 name = "virtual-cpu-core"
 version = "0.1.0"
 
+[[package]]
+name = "virtual-cpu-gbz80"
+version = "0.1.0"
+dependencies = [
+ "virtual-cpu-8080 0.1.0",
+ "virtual-cpu-core 0.1.0",
+]
+

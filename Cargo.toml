@@ -1,5 +1,6 @@
 [workspace]
 members = [
   "virtual-cpu-core",
-  "virtual-cpu-8080"
+  "virtual-cpu-8080",
+  "virtual-cpu-gbz80"
 ]

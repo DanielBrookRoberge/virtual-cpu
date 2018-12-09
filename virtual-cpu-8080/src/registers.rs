@@ -1,6 +1,6 @@
 use crate::flags::Flags8080;
 use virtual_cpu_core::bytes::*;
-use virtual_cpu_core::{Registers16, Registers8};
+use virtual_cpu_core::{Flags, Registers16, Registers8};
 
 #[derive(Clone, Copy)]
 pub enum Name8 {
@@ -9,12 +9,14 @@ pub enum Name8 {
     C,
     D,
     E,
+    F,
     H,
     L,
 }
 
 #[derive(Clone, Copy)]
 pub enum Name16 {
+    AF,
     BC,
     DE,
     HL,
@@ -52,6 +54,7 @@ impl Registers8 for Registers8080 {
             Name8::C => self.c,
             Name8::D => self.d,
             Name8::E => self.e,
+            Name8::F => self.cc.serialize(),
             Name8::H => self.h,
             Name8::L => self.l,
         }
@@ -64,6 +67,7 @@ impl Registers8 for Registers8080 {
             Name8::C => self.c = val,
             Name8::D => self.d = val,
             Name8::E => self.e = val,
+            Name8::F => self.cc.deserialize(val),
             Name8::H => self.h = val,
             Name8::L => self.l = val,
         }
@@ -75,6 +79,7 @@ impl Registers16 for Registers8080 {
 
     fn get16(&self, reg: Name16) -> u16 {
         match reg {
+            Name16::AF => assemble_word(self.a, self.get8(Name8::F)),
             Name16::BC => assemble_word(self.b, self.c),
             Name16::DE => assemble_word(self.d, self.e),
             Name16::HL => assemble_word(self.h, self.l),
@@ -83,6 +88,10 @@ impl Registers16 for Registers8080 {
 
     fn set16(&mut self, reg: Name16, val: u16) {
         match reg {
+            Name16::AF => {
+                self.a = high_order_byte(val);
+                self.set8(Name8::F, low_order_byte(val));
+            }
             Name16::BC => {
                 self.b = high_order_byte(val);
                 self.c = low_order_byte(val);
