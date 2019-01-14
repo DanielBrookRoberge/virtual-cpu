@@ -2,6 +2,7 @@ use virtual_cpu_core::{Memory, Program, Stack};
 
 use crate::memory::Memory8080;
 use crate::stack::Stack8080;
+use crate::instructions::apply_offset;
 
 static INSTRUCTION_LENGTH: [u16; 256] = [
     1, 3, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, // 0x00..0x0f
@@ -31,6 +32,10 @@ pub struct Program8080 {
 impl Program8080 {
     pub fn new() -> Program8080 {
         Program8080::default()
+    }
+
+    pub fn jr(&mut self, offset: u8) {
+        self.jump(apply_offset(self.pc, offset));
     }
 }
 

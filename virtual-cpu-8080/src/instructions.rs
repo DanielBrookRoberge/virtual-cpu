@@ -39,6 +39,10 @@ pub fn byte_arg_from(instruction: &[u8]) -> u8 {
     instruction[1]
 }
 
+pub fn apply_offset(base: u16, offset: u8) -> u16 {
+    ((base as i32) + (offset as i8 as i32)) as u16
+}
+
 pub fn and8(a: u8, b: u8) -> u8 {
     a & b
 }

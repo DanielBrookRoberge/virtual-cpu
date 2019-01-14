@@ -1,3 +1,4 @@
+use virtual_cpu_8080::flags::Flags8080;
 use virtual_cpu_8080::instructions::*;
 use virtual_cpu_8080::registers::{Name16, Name8};
 use virtual_cpu_8080::state::State8080 as State;
@@ -108,12 +109,12 @@ pub fn emulate_group0(instruction: &[u8], s: &mut State) {
             s.r.a = (s.r.cc.cy as u8) | (x << 1);
             s.r.cc.cy = (x & 0x80) != 0;
         }
-        0x18 => unimplemented_instruction(s, opcode), // JR n
-        0x19 => s.add_rr16(Name16::DE),               // ADD HL,DE
-        0x1a => s.mov_rp8(Name8::A, Name16::DE),      // LD A,(DE)
-        0x1b => s.r.update16(Name16::DE, dec16),      // DEC DE
-        0x1c => s.unary_math_r8(Name8::E, inc8),      // INC E
-        0x1d => s.unary_math_r8(Name8::E, dec8),      // DEC E
+        0x18 => s.jr_o(byte_arg_from(instruction)), // JR n
+        0x19 => s.add_rr16(Name16::DE),             // ADD HL,DE
+        0x1a => s.mov_rp8(Name8::A, Name16::DE),    // LD A,(DE)
+        0x1b => s.r.update16(Name16::DE, dec16),    // DEC DE
+        0x1c => s.unary_math_r8(Name8::E, inc8),    // INC E
+        0x1d => s.unary_math_r8(Name8::E, dec8),    // DEC E
         0x1e => s.mov_ri8(Name8::E, byte_arg_from(instruction)), // LD E,n
         0x1f => {
             // RR A
@@ -122,8 +123,8 @@ pub fn emulate_group0(instruction: &[u8], s: &mut State) {
             s.r.cc.cy = (x & 0x01) == 1;
         }
 
-        0x20 => unimplemented_instruction(s, opcode), // JR NZ,n
-        0x21 => s.mov_ri16(Name16::HL, word_arg_from(instruction)), // LD HL,nn
+        0x20 => s.jr_if(byte_arg_from(instruction), Flags8080::is_nz), // JR NZ,n
+        0x21 => s.mov_ri16(Name16::HL, word_arg_from(instruction)),    // LD HL,nn
         0x22 => {
             // LDI (HL),A
             s.mov_pr8(Name16::HL, Name8::A);
@@ -142,8 +143,8 @@ pub fn emulate_group0(instruction: &[u8], s: &mut State) {
                 s.add_ri8(0x60);
             }
         }
-        0x28 => unimplemented_instruction(s, opcode), // JR Z,n
-        0x29 => s.add_rr16(Name16::HL),               // ADD HL,HL
+        0x28 => s.jr_if(byte_arg_from(instruction), Flags8080::is_z), // JR Z,n
+        0x29 => s.add_rr16(Name16::HL),                               // ADD HL,HL
         0x2a => {
             // LDI A,(HL)
             s.mov_rp8(Name8::A, Name16::HL);
@@ -155,8 +156,8 @@ pub fn emulate_group0(instruction: &[u8], s: &mut State) {
         0x2e => s.mov_ri8(Name8::L, byte_arg_from(instruction)), // LD L,n
         0x2f => s.r.update8(Name8::A, |a| !a),   // CPL
 
-        0x30 => unimplemented_instruction(s, opcode), // JR NC,n
-        0x31 => s.s.set_sp(word_arg_from(instruction)), // LD SP,nn
+        0x30 => s.jr_if(byte_arg_from(instruction), Flags8080::is_nc), // JR NC,n
+        0x31 => s.s.set_sp(word_arg_from(instruction)),                // LD SP,nn
         0x32 => {
             // LDD (HL),A
             s.mov_pr8(Name16::HL, Name8::A);
@@ -177,7 +178,7 @@ pub fn emulate_group0(instruction: &[u8], s: &mut State) {
         }
         0x36 => s.mov_pi8(Name16::HL, byte_arg_from(instruction)), // LD (HL),n
         0x37 => s.r.cc.cy = true,                                  // SCF
-        0x38 => unimplemented_instruction(s, opcode),              // JR C,n
+        0x38 => s.jr_if(byte_arg_from(instruction), Flags8080::is_c), // JR C,n
         0x39 => s.add_ri16(s.s.get_sp()),                          // ADD HL,SP
         0x3a => {
             // LDD A,(HL)
@@ -216,42 +217,45 @@ fn emulate_group3(instruction: &[u8], s: &mut State) {
         0xd0 => s.ret_if(instruction),  // RET NC (implicitly)
         0xd1 => s.pop_r16(Name16::DE),  // POP DE
         0xd2 => s.jump_if(instruction), // JP NC,nn (implicitly)
-        0xd3 => unimplemented_instruction(s, opcode), // No instruction
+        0xd3 => panic!("0xd3 is not valid instruction"), // No instruction
         0xd4 => s.call_if(instruction), // CALL NC,nn (implicitly)
         0xd5 => s.push_r16(Name16::DE), // PUSH DE
         0xd6 => s.sub_ri8(byte_arg_from(instruction)), // SUB A,n
         0xd7 => s.call_a(0x0010),       // RST 10
         0xd8 => s.ret_if(instruction),  // RET C (implicitly)
-        0xd9 => unimplemented_instruction(s, opcode), // RETI
+        0xd9 => {
+            s.ret();
+            s.set_interrupt_flag(true)
+        } // RETI
         0xda => s.jump_if(instruction), // JP C,nn (implicitly)
-        0xdb => unimplemented_instruction(s, opcode), // No instruction
+        0xdb => panic!("0xdb is not valid instruction"), // No instruction
         0xdc => s.call_if(instruction), // CALL C,nn (implicitly)
-        0xdd => unimplemented_instruction(s, opcode), // No instruction
+        0xdd => panic!("0xdd is not valid instruction"), // No instruction
         0xde => s.sbb_ri8(byte_arg_from(instruction)), // SBC A,n
         0xdf => s.call_a(0x0018),       // RST 18
 
-        0xe0 => unimplemented_instruction(s, opcode), // LDH (n),A
-        0xe1 => s.pop_r16(Name16::HL),                // POP HL
-        0xe2 => unimplemented_instruction(s, opcode), // LDH (C),A
-        0xe3 => unimplemented_instruction(s, opcode), // No instruction
-        0xe4 => unimplemented_instruction(s, opcode), // No instruction
-        0xe5 => s.push_r16(Name16::HL),               // PUSH HL
-        0xe6 => s.logical_operation_ri(byte_arg_from(instruction), and8), // AND n
-        0xe7 => s.call_a(0x0020),                     // RST 20
-        0xe8 => unimplemented_instruction(s, opcode), // ADD SP,d
-        0xe9 => unimplemented_instruction(s, opcode), // JP (HL)
-        0xea => s.mov_ar8(word_arg_from(instruction), Name8::A), // LD (nn),A
-        0xeb => unimplemented_instruction(s, opcode), // No instruction
-        0xec => unimplemented_instruction(s, opcode), // No instruction
-        0xed => unimplemented_instruction(s, opcode), // No instruction
-        0xee => s.logical_operation_ri(byte_arg_from(instruction), xor8), // XOR n
-        0xef => s.call_a(0x0028),                     // RST 28
+        0xe0 => s.mov_ar8(0xff00 + byte_arg_from(instruction) as u16, Name8::A), // LDH (n),A
+        0xe1 => s.pop_r16(Name16::HL),                                           // POP HL
+        0xe2 => unimplemented_instruction(s, opcode),                            // LDH (C),A
+        0xe3 => panic!("0xe3 is not valid instruction"),                         // No instruction
+        0xe4 => panic!("0xe4 is not valid instruction"),                         // No instruction
+        0xe5 => s.push_r16(Name16::HL),                                          // PUSH HL
+        0xe6 => s.logical_operation_ri(byte_arg_from(instruction), and8),        // AND n
+        0xe7 => s.call_a(0x0020),                                                // RST 20
+        0xe8 => unimplemented_instruction(s, opcode),                            // ADD SP,d
+        0xe9 => unimplemented_instruction(s, opcode),                            // JP (HL)
+        0xea => s.mov_ar8(word_arg_from(instruction), Name8::A),                 // LD (nn),A
+        0xeb => panic!("0xeb is not valid instruction"),                         // No instruction
+        0xec => panic!("0xec is not valid instruction"),                         // No instruction
+        0xed => panic!("0xed is not valid instruction"),                         // No instruction
+        0xee => s.logical_operation_ri(byte_arg_from(instruction), xor8),        // XOR n
+        0xef => s.call_a(0x0028),                                                // RST 28
 
         0xf0 => unimplemented_instruction(s, opcode), // LDH A,(n)
         0xf1 => s.pop_r16(Name16::AF),                // POP AF
-        0xf2 => unimplemented_instruction(s, opcode), // No instruction
+        0xf2 => panic!("0xf2 is not valid instruction"), // No instruction
         0xf3 => s.set_interrupt_flag(false),          // DI
-        0xf4 => unimplemented_instruction(s, opcode), // No instruction
+        0xf4 => panic!("0xf4 is not valid instruction"), // No instruction
         0xf5 => s.push_r16(Name16::AF),               // PUSH AF
         0xf6 => s.logical_operation_ri(byte_arg_from(instruction), or8), // OR n
         0xf7 => s.call_a(0x0030),                     // RST 30
@@ -259,8 +263,8 @@ fn emulate_group3(instruction: &[u8], s: &mut State) {
         0xf9 => s.s.set_sp(s.r.get16(Name16::HL)),    // LD SP,HL
         0xfa => s.mov_ra8(Name8::A, word_arg_from(instruction)), // LD A,(nn)
         0xfb => s.set_interrupt_flag(true),           // EI
-        0xfc => unimplemented_instruction(s, opcode), // No instruction
-        0xfd => unimplemented_instruction(s, opcode), // No instruction
+        0xfc => panic!("0xfc is not valid instruction"), // No instruction
+        0xfd => panic!("0xfd is not valid instruction"), // No instruction
         0xfe => s.cmp_ri8(byte_arg_from(instruction)), // CP n
         0xff => s.call_a(0x0030),                     // RST 30
 

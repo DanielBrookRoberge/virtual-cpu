@@ -104,6 +104,10 @@ impl State8080 {
         self.p.jump(addr);
     }
 
+    pub fn jr_o(&mut self, offset: u8) {
+        self.p.jr(offset);
+    }
+
     pub fn call_a(&mut self, addr: u16) {
         self.p.call(&mut self.m, &mut self.s, addr);
     }
@@ -115,6 +119,12 @@ impl State8080 {
     pub fn jump_if(&mut self, instruction: &[u8]) {
         if self.test_flags(predicate_for(instruction[0])) {
             self.jump_a(word_arg_from(instruction));
+        }
+    }
+
+    pub fn jr_if(&mut self, offset: u8, predicate: impl (Fn(&Flags8080) -> bool)) {
+        if self.test_flags(predicate) {
+            self.jr_o(offset);
         }
     }
 
